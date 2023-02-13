@@ -56,13 +56,14 @@ class DotBartForConditionalGeneration(BartForConditionalGeneration):
         cond1 = input_ids is None and dots is None and inputs_embeds is not None
         cond2 = input_ids is not None and dots is not None and inputs_embeds is None
 
+        # generation: short circuit if encoder_outputs is already computed.
         if encoder_outputs is not None:
             return super().forward(
                 encoder_outputs = encoder_outputs,
                 **kwargs,
             )
 
-        # let inputs_embeds short-circuit input_ids
+        # inputs_embeds short-circuits input_ids
         if inputs_embeds is None:
             emb = self.get_input_embeddings()
             embedding_dim = emb.embedding_dim
